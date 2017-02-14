@@ -22,7 +22,10 @@ import (
 
 	kvm "github.com/dhiltgen/docker-machine-kvm"
 	"github.com/docker/machine/libmachine/drivers"
+	"github.com/docker/machine/libmachine/engine"
+	"github.com/docker/machine/libmachine/mcnutils"
 	"k8s.io/minikube/pkg/minikube/constants"
+	"k8s.io/minikube/pkg/minikube/cluster/local"
 )
 
 func createKVMHost(config MachineConfig) *kvm.Driver {
@@ -41,5 +44,19 @@ func createKVMHost(config MachineConfig) *kvm.Driver {
 		ISO:            filepath.Join(constants.GetMinipath(), "machines", constants.MachineName, "boot2docker.iso"),
 		CacheMode:      "default",
 		IOMode:         "threads",
+	}
+}
+
+func createLocalHost(config MachineConfig) *local.Driver {
+	return &local.Driver{
+		EnginePort: engine.DefaultPort,
+		BaseDriver: &drivers.BaseDriver{
+			MachineName: constants.MachineName,
+			StorePath:   constants.GetMinipath(),
+			IPAddress: "127.0.0.1",
+			SSHUser: mcnutils.GetUsername(),
+			SSHPort: 22,
+			SSHKeyPath: filepath.Join(mcnutils.GetHomeDir(), ".ssh", "id_rsa"),
+		},
 	}
 }

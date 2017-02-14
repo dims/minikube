@@ -25,11 +25,13 @@ import (
 	"github.com/docker/machine/libmachine/drivers/plugin"
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
+	"k8s.io/minikube/pkg/minikube/cluster/local"
 )
 
 var driverMap = map[string]driverGetter{
 	"kvm":        getKVMDriver,
 	"virtualbox": getVirtualboxDriver,
+	"local": getLocalDriver,
 }
 
 func getKVMDriver(rawDriver []byte) (drivers.Driver, error) {
@@ -37,6 +39,15 @@ func getKVMDriver(rawDriver []byte) (drivers.Driver, error) {
 	driver = &kvm.Driver{}
 	if err := json.Unmarshal(rawDriver, &driver); err != nil {
 		return nil, errors.Wrap(err, "Error unmarshalling kvm driver")
+	}
+	return driver, nil
+}
+
+func getLocalDriver(rawDriver []byte) (drivers.Driver, error) {
+	var driver drivers.Driver
+	driver = &local.Driver{}
+	if err := json.Unmarshal(rawDriver, &driver); err != nil {
+		return nil, errors.Wrap(err, "Error unmarshalling local driver")
 	}
 	return driver, nil
 }

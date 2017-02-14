@@ -148,6 +148,7 @@ func (api *LocalClient) NewHost(driverName string, rawDriver []byte) (*host.Host
 				ServerKeyPath:    filepath.Join(api.GetMachinesDir(), "server-key.pem"),
 			},
 			EngineOptions: &engine.Options{
+				InstallURL:    drivers.DefaultEngineInstallURL,
 				StorageDriver: "aufs",
 				TLSVerify:     true,
 			},
